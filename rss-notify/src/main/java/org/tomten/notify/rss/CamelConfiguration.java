@@ -26,8 +26,7 @@ public class CamelConfiguration {
         return new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                String rssURL = "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-rss/temp/SearchRequest.xml"
-                        + "?pid=12311211&sorter/field=issuekey&sorter/order=DESC&tempMax=1000&delay=10s";
+                String rssURL = "http://www.vg.no/rss/feed/?categories=&keywords=&limit=10&format=rss";
 
                 from("rss:" + rssURL).
                         marshal().rss().
