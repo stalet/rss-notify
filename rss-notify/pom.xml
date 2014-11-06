@@ -43,6 +43,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
@@ -94,6 +99,18 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-irc</artifactId>
             <version>${camel.version}</version>
+        </dependency>
+
+        <!-- hawt.io -->
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.hawt</groupId>
+            <artifactId>hawtio-springboot</artifactId>
+            <version>1.4.29</version>
         </dependency>
 
         <!-- logging -->
@@ -158,6 +175,24 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <path>/</path>
+                    <webapps>
+                        <webapp>
+                            <contextPath>/console</contextPath>
+                            <groupId>io.hawt</groupId>
+                            <artifactId>hawtio-web</artifactId>
+                            <version>1.4.29</version>
+                            <type>war</type>
+                            <asWebapp>true</asWebapp>
+                        </webapp>
+                    </webapps>
+                </configuration>
             </plugin>
         </plugins>
     </build>

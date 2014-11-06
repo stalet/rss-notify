@@ -14,7 +14,7 @@ public class CamelConfiguration {
         return new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("timer://foo?fixedRate=true&period=5000").
+                from("timer://foo?fixedRate=true&period=60000").
                         setBody().constant("<hello>world!</hello>").
                         log(">>> ${body}");
             }
@@ -31,8 +31,8 @@ public class CamelConfiguration {
                 from("rss:" + rssURL).
                         marshal().rss().
                         setBody(xpath("/rss/channel/item/title/text()")).
-                        transform(body().prepend("Jira: ")).
-                        to("log:jirabot?showHeaders=false&showExchangePattern=false&showBodyType=false");
+                        transform(body().prepend("Forside: ")).
+                        to("log:vg?showHeaders=false&showExchangePattern=false&showBodyType=false");
             }
         };
     }
