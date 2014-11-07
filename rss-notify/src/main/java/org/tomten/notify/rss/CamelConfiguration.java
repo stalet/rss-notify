@@ -19,9 +19,9 @@ public class CamelConfiguration {
                 from("rss:" + rssURL).
                         marshal().rss().
                         setHeader("title", xpath("/rss/channel/item/title/text()")).
-                        setBody(xpath("/rss/channel/item/description/text()")).
+                        setHeader("description", xpath("/rss/channel/item/description/text()")).
                         to("log:rssRoute?showHeaders=false&showExchangePattern=false&showBodyType=false").
-                        process(new NotifySendProcessor());
+                        to("bean:notifySendProcessor");
 
             }
         };
