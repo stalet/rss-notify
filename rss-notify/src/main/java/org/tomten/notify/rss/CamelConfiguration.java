@@ -10,18 +10,6 @@ import org.springframework.context.annotation.Configuration;
 public class CamelConfiguration {
 
     @Bean
-    RouteBuilder helloWorldRouteBuilder() {
-        return new RouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                from("timer://foo?fixedRate=true&period=60000").
-                        setBody().constant("<hello>world!</hello>").
-                        log(">>> ${body}");
-            }
-        };
-    }
-
-    @Bean
     RouteBuilder rssRouteBuilder() {
         return new RouteBuilder() {
             @Override
@@ -30,8 +18,8 @@ public class CamelConfiguration {
 
                 from("rss:" + rssURL).
                         marshal().rss().
-                        setBody(xpath("/rss/channel/item/title/text()")).
-                        setHeader("title").constant("VG Nyheter").
+                        setHeader("title", xpath("/rss/channel/item/title/text()")).
+                        setBody(xpath("/rss/channel/item/description/text()")).
                         to("log:rssRoute?showHeaders=false&showExchangePattern=false&showBodyType=false").
                         process(new NotifySendProcessor());
 
