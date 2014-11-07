@@ -112,7 +112,14 @@
             <artifactId>hawtio-springboot</artifactId>
             <version>1.4.29</version>
         </dependency>
-
+        <!--
+        <dependency>
+            <groupId>io.hawt</groupId>
+            <artifactId>hawtio-web</artifactId>
+            <version>1.4.29</version>
+            <type>war</type>
+        </dependency>
+        -->
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>

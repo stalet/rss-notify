@@ -31,8 +31,10 @@ public class CamelConfiguration {
                 from("rss:" + rssURL).
                         marshal().rss().
                         setBody(xpath("/rss/channel/item/title/text()")).
-                        transform(body().prepend("Forside: ")).
-                        to("log:vg?showHeaders=false&showExchangePattern=false&showBodyType=false");
+                        setHeader("title").constant("VG Nyheter").
+                        to("log:rssRoute?showHeaders=false&showExchangePattern=false&showBodyType=false").
+                        process(new NotifySendProcessor());
+
             }
         };
     }
