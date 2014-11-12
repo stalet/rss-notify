@@ -13,9 +13,10 @@ public class NotifySendProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(NotifySendProcessor.class);
 
+    @SuppressWarnings("UnusedDeclaration")
     public void process(@Header("title") final String title, @Header("description") final String description) throws Exception {
         LOG.info("process() " + title);
-        new ProcessBuilder("/usr/bin/notify-send", title, description).start();
+        new ProcessBuilder("/usr/bin/notify-send", title, "" + description).start();
     }
 
 }

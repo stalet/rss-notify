@@ -10,6 +10,22 @@ import org.springframework.context.annotation.Configuration;
 public class CamelConfiguration {
 
     @Bean
+    RouteBuilder jenkinsRouteBuilder() {
+        return new RouteBuilder() {
+            @Override
+            public void configure() throws Exception {
+                String rssURL = "https://d1jenkins01.dev.as2116.net/rssAll";
+
+                from("atom:" + rssURL).
+                        to("bean:atomValuePicker").
+                        to("bean:notifySendProcessor");
+
+            }
+        };
+    }
+/*
+
+    @Bean
     RouteBuilder rssRouteBuilder() {
         return new RouteBuilder() {
             @Override
@@ -25,7 +41,7 @@ public class CamelConfiguration {
             }
         };
     }
-
+*/
     // Collaborators fixtures
     @Autowired
     CamelContext camelContext;
