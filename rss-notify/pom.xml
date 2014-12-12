@@ -21,6 +21,7 @@
         <camel.version>2.14.0</camel.version>
         <spring-boot.version>1.2.0.RELEASE</spring-boot.version>
         <spring.version>4.1.3.RELEASE</spring.version>
+        <hawtio.version>1.4.41</hawtio.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <start-class>org.tomten.notify.rss.Application</start-class>
@@ -116,16 +117,36 @@
         <dependency>
             <groupId>io.hawt</groupId>
             <artifactId>hawtio-springboot</artifactId>
-            <version>1.4.41</version>
+            <version>${hawtio.version}</version>
         </dependency>
-        <!--
+        <dependency>
+            <artifactId>hawtio-web</artifactId>
+            <groupId>io.hawt</groupId>
+            <type>war</type>
+            <scope>provided</scope>
+            <version>${hawtio.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>hawtio-core</artifactId>
+            <groupId>io.hawt</groupId>
+            <version>${hawtio.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.hawt</groupId>
-            <artifactId>hawtio-web</artifactId>
-            <version>1.4.29</version>
-            <type>war</type>
+            <artifactId>hawtio-plugin-mbean</artifactId>
+            <version>${hawtio.version}</version>
         </dependency>
-        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -206,6 +227,77 @@
                         </webapp>
                     </webapps>
                 </configuration>
+            </plugin>
+            <!--
+        Repackage static content from war into a jar, placing static content under /static/hawtio
+        -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/classes/static/hawtio/</outputDirectory>
+                            <includeArtifactIds>hawtio-web</includeArtifactIds>
+                            <excludeTypes>pom</excludeTypes>
+                            <excludes>**/WEB-INF/**,**/META-INF/**</excludes>
+                            <excludeTransitive>true</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            angularJs html5mode makes things difficult, as it requires a server side redirect to be configured, and relying on a 404 redirect is also problematic
+            so removing this feature
+            -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <configuration>
+                    <basedir>${basedir}/target/classes/static/hawtio</basedir>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>removeBaseRewriteStatement</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>index.html</include>
+                            </includes>
+                            <encoding>ISO-8859-1</encoding>
+                            <token>document.write("&lt;base href='/" + base + "/' /&gt;");</token>
+                            <value>//document.write("&lt;base href='/" + base + "/' /&gt;");</value>
+                            <regex>false</regex>
+                            <quiet>false</quiet>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>removeHtml5Mode</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>app/app.js</include>
+                            </includes>
+                            <encoding>ISO-8859-1</encoding>
+                            <token>$locationProvider.html5Mode(true);</token>
+                            <value>$locationProvider.html5Mode(false);</value>
+                            <regex>false</regex>
+                            <quiet>false</quiet>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
